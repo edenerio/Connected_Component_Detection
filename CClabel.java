@@ -106,13 +106,30 @@ public class CClabel extends Property {
             CCproperty[i].setMaxR(0);
             CCproperty[i].setMinC(this.numCols);
             CCproperty[i].setMaxC(0);
-            
+
 
         }
     }
 
-    public void drawBoxes() {
+    public void drawBoxes(int [][]zfa, Property []CCproperty) {
         // algo in specs
+        int minRow, minCol, maxRow, maxCol, label;
+        for(int index=1; index<=this.trueNumCC; index++){
+            minRow = CCproperty[index].getMinR()+1;
+            minCol = CCproperty[index].getMinC()+1;
+            maxRow = CCproperty[index].getMaxR()+1;
+            maxCol = CCproperty[index].getMaxC()+1;
+            label = CCproperty[index].getLabel();
+
+            for(int i=minCol; i<=maxCol; i++){
+                zfa[minRow][i] = label;
+                zfa[maxRow][i] = label;
+            }
+            for(int i=minRow; i<=maxRow; i++){
+                zfa[i][minCol] = label;
+                zfa[i][minCol] = label;
+            }
+        }
     }
 
     public void updateEQ() {
