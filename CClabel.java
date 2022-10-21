@@ -43,8 +43,8 @@ public class CClabel extends Property {
          * Read from input file and write to zeroFramedAry
          * begin at (1,1)
          */
-        for (int i = 1; i < numRows; i++) {
-            for (int j = 1; j < numCols; j++) {
+        for (int i = 1; i < numRows-1; i++) {
+            for (int j = 1; j < numCols-1; j++) {
                 this.zeroFramedAry[i][j] = b.nextInt();
             }
         }
@@ -97,8 +97,18 @@ public class CClabel extends Property {
 
     }
 
-    public void connectPass3() {
+    public void connectPass3(int [][]zfa, int []eqarr, Property []CCproperty) {
         // algo in specs
+        for(int i=1; i<this.trueNumCC; i++){
+            CCproperty[i].setLabel(i);
+            CCproperty[i].setNumPixels(0);
+            CCproperty[i].setMinR(this.numRows);
+            CCproperty[i].setMaxR(0);
+            CCproperty[i].setMinC(this.numCols);
+            CCproperty[i].setMaxC(0);
+            
+
+        }
     }
 
     public void drawBoxes() {
