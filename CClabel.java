@@ -43,8 +43,8 @@ public class CClabel extends Property {
          * Read from input file and write to zeroFramedAry
          * begin at (1,1)
          */
-        for (int i = 1; i < numRows-1; i++) {
-            for (int j = 1; j < numCols-1; j++) {
+        for (int i = 1; i < numRows; i++) {
+            for (int j = 1; j < numCols; j++) {
                 this.zeroFramedAry[i][j] = b.nextInt();
             }
         }
@@ -81,33 +81,164 @@ public class CClabel extends Property {
         }
     }
 
-    public void connect8Pass1() {
+    public int[][] connect8Pass1(int [][]zfa) {
+        this.newLabel=0;
+        int px;
+        int a, b, c, d;
+        int pxcase=0;
+        for(int i=1; i<this.numRows; i++){
+            for(int j=1; j<this.numCols; j++){
+                px = zfa[i][j];
+                if(px>0){
+                    a = zfa[i-1][j-1];
+                    b = zfa[i-1][j];
+                    c = zfa[i-1][j+1];
+                    d = zfa[i][j-1];
+                    if(a==0 && b==0 && c==0 && d==0){
+                        this.newLabel++;
+                        px = this.newLabel;
+                        pxcase = 1;
+                    }
+                    if(a==b && a==c && a==d){
+                        px = this.CCproperty[0].getLabel(); //PROBLEM
+                        pxcase = 2;
+                    }
+                    else{
+                        px = Math.min((Math.min(Math.min(a, b), c)), d);
+                        pxcase = 3;
+                    }
+                }
+                if(pxcase == 1 || pxcase == 3){
+                    this.EQAry[px] = this.newLabel;
+                }
+            }
+        }
+        return zfa;
+    }
+
+    public int[][] connect8Pass2(int [][]zfa) {
+        //update Equivalence theorem
+        int px, lbl;
+        int e, f, g, h;
+        for(int i=this.numRows; i>=1; i--){
+            for(int j=this.numCols; j>=1; j--){
+                px = zfa[i][j];
+                if(px>0){
+                    e = zfa[i][j+1];
+                    f = zfa[i+1][j-1];
+                    g = zfa[i+1][j];
+                    h = zfa[i+1][j+1];
+                    if(e==0 && f==0 && g==0 && h==0){
+                        continue;
+                    }
+                    if(e==f && e==g && e==h){
+                        continue;
+                    }
+                    else{
+                        lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
+                        this.CCproperty[0].setLabel(lbl);   //PROBLEM
+                    }
+                }
+            }
+        }
+        return zfa;
+    }
+
+    public int[][] connect4Pass1(int [][]zfa) {
+        this.newLabel=0;
+        int px;
+        int a, b;
+        int pxcase=0;
+        for(int i=1; i<this.numRows; i++){
+            for(int j=1; j<this.numCols; j++){
+                px = zfa[i][j];
+                if(px>0){
+                    a = zfa[i+1][j];
+                    b = zfa[i][j-1];
+                    if(a==0 && b==0){
+                        this.newLabel++;
+                        px = this.newLabel;
+                        pxcase = 1;
+                    }
+                    if(a==b){
+                        px = this.CCproperty[0].getLabel(); //PROBLEM
+                        pxcase = 2;
+                    }
+                    else{
+                        px = Math.min(a, b);
+                        pxcase = 3;
+                    }
+                }
+                if(pxcase == 1 || pxcase == 3){
+                    this.EQAry[px] = this.newLabel;
+                }
+            }
+        }
+        return zfa;
+    }
+
+    public int[][] connect4Pass2(int [][]zfa) {
+        //update Equivalence theorem
+        int px, lbl;
+        int e, g;
+        for(int i=this.numRows; i>=1; i--){
+            for(int j=this.numCols; j>=1; j--){
+                px = zfa[i][j];
+                if(px>0){
+                    e = zfa[i][j+1];
+                    g = zfa[i+1][j];
+                    if(e==0 && g==0){
+                        continue;
+                    }
+                    if(e==g){
+                        continue;
+                    }
+                    else{
+                        lbl = Math.min(Math.min(e, g), px);
+                        this.CCproperty[0].setLabel(lbl);   //PROBLEM
+                    }
+                }
+            }
+        }
+        return zfa;
 
     }
 
-    public void connect8Pass2() {
-
-    }
-
-    public void connect4Pass1() {
-
-    }
-
-    public void connect4Pass2() {
-
-    }
-
-    public void connectPass3(int [][]zfa, int []eqarr, Property []CCproperty) {
+    public void connectPass3(int [][]zfa, Property []CCproperty) {
+        int k=0;
+        int numpx;
+        int px;
         // algo in specs
         for(int i=1; i<this.trueNumCC; i++){
-            CCproperty[i].setLabel(i);
-            CCproperty[i].setNumPixels(0);
-            CCproperty[i].setMinR(this.numRows);
-            CCproperty[i].setMaxR(0);
-            CCproperty[i].setMinC(this.numCols);
-            CCproperty[i].setMaxC(0);
-
-
+            this.CCproperty[i].setLabel(i);
+            this.CCproperty[i].setNumPixels(0);
+            this.CCproperty[i].setMinR(this.numRows);
+            this.CCproperty[i].setMaxR(0);
+            this.CCproperty[i].setMinC(this.numCols);
+            this.CCproperty[i].setMaxC(0);
+        }
+        for(int r=1; r<this.numRows; r++){
+            for(int c=1; c<this.numCols; c++){
+                px = zfa[r][c];
+                if(px > 0){
+                    zfa[r][c] = this.EQAry[px];
+                    k = zfa[r][c];
+                    numpx = this.CCproperty[k].getNumPixels();
+                    CCproperty[k].setNumPixels(++numpx);
+                    if(r < this.CCproperty[k].getMinR()){
+                        this.CCproperty[k].setMinR(r);
+                    }
+                    if(r > this.CCproperty[k].getMaxR()){
+                        this.CCproperty[k].setMaxR(r);
+                    }
+                    if(c < this.CCproperty[k].getMinC()){
+                        this.CCproperty[k].setMinC(c);
+                    }
+                    if(c > this.CCproperty[k].getMaxC()){
+                        this.CCproperty[k].setMaxC(c);
+                    }
+                }
+            }
         }
     }
 
@@ -115,11 +246,11 @@ public class CClabel extends Property {
         // algo in specs
         int minRow, minCol, maxRow, maxCol, label;
         for(int index=1; index<=this.trueNumCC; index++){
-            minRow = CCproperty[index].getMinR()+1;
-            minCol = CCproperty[index].getMinC()+1;
-            maxRow = CCproperty[index].getMaxR()+1;
-            maxCol = CCproperty[index].getMaxC()+1;
-            label = CCproperty[index].getLabel();
+            minRow = this.CCproperty[index].getMinR()+1;
+            minCol = this.CCproperty[index].getMinC()+1;
+            maxRow = this.CCproperty[index].getMaxR()+1;
+            maxCol = this.CCproperty[index].getMaxC()+1;
+            label = this.CCproperty[index].getLabel();
 
             for(int i=minCol; i<=maxCol; i++){
                 zfa[minRow][i] = label;
