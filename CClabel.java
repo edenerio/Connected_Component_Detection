@@ -86,8 +86,8 @@ public class CClabel extends Property {
         int px;
         int a, b, c, d, k;
         int pxcase=0;
-        for(int i=1; i<this.numRows; i++){
-            for(int j=1; j<this.numCols; j++){
+        for(int i=1; i<=this.numRows; i++){
+            for(int j=1; j<=this.numCols; j++){
                 px = zfa[i][j];
                 if(px>0){
                     k = zfa[i][j];
@@ -110,7 +110,7 @@ public class CClabel extends Property {
                     }
                 }
                 if(pxcase == 1 || pxcase == 3){
-                    this.EQAry[px] = this.newLabel;
+                    updateEQ(this.newLabel, px);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class CClabel extends Property {
                     }
                     else{
                         lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
-                        this.CCproperty[k].setLabel(lbl);   //PROBLEM
+                        this.CCproperty[k].setLabel(lbl);
                     }
                 }
             }
@@ -148,12 +148,13 @@ public class CClabel extends Property {
 
     public int[][] connect4Pass1(int [][]zfa) {
         int px;
-        int a, b;
+        int a, b, k;
         int pxcase=0;
-        for(int i=1; i<this.numRows; i++){
-            for(int j=1; j<this.numCols; j++){
+        for(int i=1; i<=this.numRows; i++){
+            for(int j=1; j<=this.numCols; j++){
                 px = zfa[i][j];
                 if(px>0){
+                    k = zfa[i][j];
                     a = zfa[i+1][j];
                     b = zfa[i][j-1];
                     if(a==0 && b==0){
@@ -162,7 +163,7 @@ public class CClabel extends Property {
                         pxcase = 1;
                     }
                     if(a==b){
-                        px = this.CCproperty[0].getLabel(); //PROBLEM
+                        px = this.CCproperty[k].getLabel();
                         pxcase = 2;
                     }
                     else{
@@ -171,7 +172,7 @@ public class CClabel extends Property {
                     }
                 }
                 if(pxcase == 1 || pxcase == 3){
-                    this.EQAry[px] = this.newLabel;
+                    updateEQ(this.newLabel, px);
                 }
             }
         }
@@ -181,11 +182,12 @@ public class CClabel extends Property {
     public int[][] connect4Pass2(int [][]zfa) {
         //update Equivalence theorem
         int px, lbl;
-        int e, g;
+        int e, g, k;
         for(int i=this.numRows; i>=1; i--){
             for(int j=this.numCols; j>=1; j--){
                 px = zfa[i][j];
                 if(px>0){
+                    k = zfa[i][j];
                     e = zfa[i][j+1];
                     g = zfa[i+1][j];
                     if(e==0 && g==0){
@@ -196,7 +198,7 @@ public class CClabel extends Property {
                     }
                     else{
                         lbl = Math.min(Math.min(e, g), px);
-                        this.CCproperty[0].setLabel(lbl);   //PROBLEM
+                        this.CCproperty[k].setLabel(lbl);
                     }
                 }
             }
@@ -264,12 +266,15 @@ public class CClabel extends Property {
         }
     }
 
-    public void updateEQ() {
-
+    public void updateEQ(int x, int y) {
+        this.EQAry[x] = y;
     }
 
     public int manageEQAry() {
-
+        int counter = 0;
+        for(int i=1; i<=this.EQAry.length; i++){
+            //if()
+        }
         return 0;
     }
 
