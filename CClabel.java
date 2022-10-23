@@ -13,6 +13,7 @@ public class CClabel extends Property {
         this.numCols = numCols;
         this.minVal = minVal;
         this.maxVal = maxVal;
+        this.newLabel = 0;
         this.zeroFramedAry = new int[numRows + 2][numCols + 2];
         this.nonZeroNeighborAry = new int[5];
         this.EQAry = new int[(numRows * numCols) / 4];
@@ -82,14 +83,14 @@ public class CClabel extends Property {
     }
 
     public int[][] connect8Pass1(int [][]zfa) {
-        this.newLabel=0;
         int px;
-        int a, b, c, d;
+        int a, b, c, d, k;
         int pxcase=0;
         for(int i=1; i<this.numRows; i++){
             for(int j=1; j<this.numCols; j++){
                 px = zfa[i][j];
                 if(px>0){
+                    k = zfa[i][j];
                     a = zfa[i-1][j-1];
                     b = zfa[i-1][j];
                     c = zfa[i-1][j+1];
@@ -100,7 +101,7 @@ public class CClabel extends Property {
                         pxcase = 1;
                     }
                     if(a==b && a==c && a==d){
-                        px = this.CCproperty[0].getLabel(); //PROBLEM
+                        px = this.CCproperty[k].getLabel();
                         pxcase = 2;
                     }
                     else{
@@ -119,11 +120,12 @@ public class CClabel extends Property {
     public int[][] connect8Pass2(int [][]zfa) {
         //update Equivalence theorem
         int px, lbl;
-        int e, f, g, h;
+        int e, f, g, h, k;
         for(int i=this.numRows; i>=1; i--){
             for(int j=this.numCols; j>=1; j--){
                 px = zfa[i][j];
                 if(px>0){
+                    k = zfa[i][j];
                     e = zfa[i][j+1];
                     f = zfa[i+1][j-1];
                     g = zfa[i+1][j];
@@ -136,7 +138,7 @@ public class CClabel extends Property {
                     }
                     else{
                         lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
-                        this.CCproperty[0].setLabel(lbl);   //PROBLEM
+                        this.CCproperty[k].setLabel(lbl);   //PROBLEM
                     }
                 }
             }
@@ -145,7 +147,6 @@ public class CClabel extends Property {
     }
 
     public int[][] connect4Pass1(int [][]zfa) {
-        this.newLabel=0;
         int px;
         int a, b;
         int pxcase=0;
@@ -277,11 +278,37 @@ public class CClabel extends Property {
     }
 
     public void printEQAry() {
-
+        for(int i = 1; i<=this.newLabel; i++){
+            System.out.println(this.EQAry[i]);
+        }
     }
 
-    public void printImg() {
+    public void printImg(BufferedWriter out) throws IOException {
+        out.write(this.numRows);
+        out.write(" ");
+        out.write(this.numCols);
+        out.write(" ");
+        out.write(this.minVal);
+        out.write(" ");
+        out.write(this.maxVal);
+        out.write("\n");
 
+        String str = Integer.toString(this.maxVal);
+        int width = str.length();
+
+        for (int r = 1; r < this.numRows; r++) {
+            for (int c = 1; c < this.numCols; c++) {
+                out.write(Integer.toString(this.zeroFramedAry[r][c]));
+                String str2 = Integer.toString(this.zeroFramedAry[r][c]);
+                int WW = str2.length();
+                out.write(" ");
+                while (WW < width) {
+                    out.write(" ");
+                    WW++;
+                }
+            }
+            out.write("\n");
+        }
     }
 
     // setter/getter here
