@@ -84,13 +84,12 @@ public class CClabel extends Property {
 
     public int[][] connect8Pass1(int[][] zfa) {
         int px;
-        int a, b, c, d, k;
+        int a, b, c, d;
         int pxcase = 0;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
                 if (px > 0) {
-                    k = zfa[i][j];
                     a = zfa[i - 1][j - 1];
                     b = zfa[i - 1][j];
                     c = zfa[i - 1][j + 1];
@@ -101,7 +100,6 @@ public class CClabel extends Property {
                         pxcase = 1;
                     }
                     if (a == b && a == c && a == d) {
-                        px = k;
                         pxcase = 2;
                     } else {
                         px = Math.min((Math.min(Math.min(a, b), c)), d);
@@ -119,24 +117,19 @@ public class CClabel extends Property {
     public int[][] connect8Pass2(int[][] zfa) {
         // update Equivalence theorem
         int px, lbl;
-        int e, f, g, h, k;
+        int e, f, g, h;
         for (int i = this.numRows; i >= 1; i--) {
             for (int j = this.numCols; j >= 1; j--) {
                 px = zfa[i][j];
                 if (px > 0) {
-                    k = zfa[i][j];
                     e = zfa[i][j + 1];
                     f = zfa[i + 1][j - 1];
                     g = zfa[i + 1][j];
                     h = zfa[i + 1][j + 1];
-                    if (e == 0 && f == 0 && g == 0 && h == 0) {
-                        continue;
-                    }
-                    if (e == f && e == g && e == h) {
-                        continue;
-                    } else {
+                    if (e != f || e != g || e != h || e != px) {
                         lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
-                        this.CCproperty[k].setLabel(lbl);
+                        zfa[i][j] = lbl;
+                        updateEQ(px, lbl);
                     }
                 }
             }
@@ -146,13 +139,12 @@ public class CClabel extends Property {
 
     public int[][] connect4Pass1(int[][] zfa) {
         int px;
-        int a, b, k;
+        int a, b;
         int pxcase = 0;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
                 if (px > 0) {
-                    k = zfa[i][j];
                     a = zfa[i + 1][j];
                     b = zfa[i][j - 1];
                     if (a == 0 && b == 0) {
@@ -161,7 +153,6 @@ public class CClabel extends Property {
                         pxcase = 1;
                     }
                     if (a == b) {
-                        px = k;
                         pxcase = 2;
                     } else {
                         px = Math.min(a, b);
@@ -187,14 +178,10 @@ public class CClabel extends Property {
                     k = zfa[i][j];
                     e = zfa[i][j + 1];
                     g = zfa[i + 1][j];
-                    if (e == 0 && g == 0) {
-                        continue;
-                    }
-                    if (e == g) {
-                        continue;
-                    } else {
+                    if (e != g || e != px) {
                         lbl = Math.min(Math.min(e, g), px);
-                        this.CCproperty[k].setLabel(lbl);
+                        zfa[i][j] = lbl;
+                        updateEQ(px, lbl);
                     }
                 }
             }
