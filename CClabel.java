@@ -82,34 +82,33 @@ public class CClabel extends Property {
         }
     }
 
-    public int[][] connect8Pass1(int [][]zfa) {
+    public int[][] connect8Pass1(int[][] zfa) {
         int px;
         int a, b, c, d, k;
-        int pxcase=0;
-        for(int i=1; i<=this.numRows; i++){
-            for(int j=1; j<=this.numCols; j++){
+        int pxcase = 0;
+        for (int i = 1; i <= this.numRows; i++) {
+            for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
-                if(px>0){
+                if (px > 0) {
                     k = zfa[i][j];
-                    a = zfa[i-1][j-1];
-                    b = zfa[i-1][j];
-                    c = zfa[i-1][j+1];
-                    d = zfa[i][j-1];
-                    if(a==0 && b==0 && c==0 && d==0){
+                    a = zfa[i - 1][j - 1];
+                    b = zfa[i - 1][j];
+                    c = zfa[i - 1][j + 1];
+                    d = zfa[i][j - 1];
+                    if (a == 0 && b == 0 && c == 0 && d == 0) {
                         this.newLabel++;
                         px = this.newLabel;
                         pxcase = 1;
                     }
-                    if(a==b && a==c && a==d){
-                        px = this.CCproperty[k].getLabel();
+                    if (a == b && a == c && a == d) {
+                        px = k;
                         pxcase = 2;
-                    }
-                    else{
+                    } else {
                         px = Math.min((Math.min(Math.min(a, b), c)), d);
                         pxcase = 3;
                     }
                 }
-                if(pxcase == 1 || pxcase == 3){
+                if (pxcase == 1 || pxcase == 3) {
                     updateEQ(this.newLabel, px);
                 }
             }
@@ -117,26 +116,25 @@ public class CClabel extends Property {
         return zfa;
     }
 
-    public int[][] connect8Pass2(int [][]zfa) {
-        //update Equivalence theorem
+    public int[][] connect8Pass2(int[][] zfa) {
+        // update Equivalence theorem
         int px, lbl;
         int e, f, g, h, k;
-        for(int i=this.numRows; i>=1; i--){
-            for(int j=this.numCols; j>=1; j--){
+        for (int i = this.numRows; i >= 1; i--) {
+            for (int j = this.numCols; j >= 1; j--) {
                 px = zfa[i][j];
-                if(px>0){
+                if (px > 0) {
                     k = zfa[i][j];
-                    e = zfa[i][j+1];
-                    f = zfa[i+1][j-1];
-                    g = zfa[i+1][j];
-                    h = zfa[i+1][j+1];
-                    if(e==0 && f==0 && g==0 && h==0){
+                    e = zfa[i][j + 1];
+                    f = zfa[i + 1][j - 1];
+                    g = zfa[i + 1][j];
+                    h = zfa[i + 1][j + 1];
+                    if (e == 0 && f == 0 && g == 0 && h == 0) {
                         continue;
                     }
-                    if(e==f && e==g && e==h){
+                    if (e == f && e == g && e == h) {
                         continue;
-                    }
-                    else{
+                    } else {
                         lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
                         this.CCproperty[k].setLabel(lbl);
                     }
@@ -146,32 +144,31 @@ public class CClabel extends Property {
         return zfa;
     }
 
-    public int[][] connect4Pass1(int [][]zfa) {
+    public int[][] connect4Pass1(int[][] zfa) {
         int px;
         int a, b, k;
-        int pxcase=0;
-        for(int i=1; i<=this.numRows; i++){
-            for(int j=1; j<=this.numCols; j++){
+        int pxcase = 0;
+        for (int i = 1; i <= this.numRows; i++) {
+            for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
-                if(px>0){
+                if (px > 0) {
                     k = zfa[i][j];
-                    a = zfa[i+1][j];
-                    b = zfa[i][j-1];
-                    if(a==0 && b==0){
+                    a = zfa[i + 1][j];
+                    b = zfa[i][j - 1];
+                    if (a == 0 && b == 0) {
                         this.newLabel++;
                         px = this.newLabel;
                         pxcase = 1;
                     }
-                    if(a==b){
-                        px = this.CCproperty[k].getLabel();
+                    if (a == b) {
+                        px = k;
                         pxcase = 2;
-                    }
-                    else{
+                    } else {
                         px = Math.min(a, b);
                         pxcase = 3;
                     }
                 }
-                if(pxcase == 1 || pxcase == 3){
+                if (pxcase == 1 || pxcase == 3) {
                     updateEQ(this.newLabel, px);
                 }
             }
@@ -179,24 +176,23 @@ public class CClabel extends Property {
         return zfa;
     }
 
-    public int[][] connect4Pass2(int [][]zfa) {
-        //update Equivalence theorem
+    public int[][] connect4Pass2(int[][] zfa) {
+        // update Equivalence theorem
         int px, lbl;
         int e, g, k;
-        for(int i=this.numRows; i>=1; i--){
-            for(int j=this.numCols; j>=1; j--){
+        for (int i = this.numRows; i >= 1; i--) {
+            for (int j = this.numCols; j >= 1; j--) {
                 px = zfa[i][j];
-                if(px>0){
+                if (px > 0) {
                     k = zfa[i][j];
-                    e = zfa[i][j+1];
-                    g = zfa[i+1][j];
-                    if(e==0 && g==0){
+                    e = zfa[i][j + 1];
+                    g = zfa[i + 1][j];
+                    if (e == 0 && g == 0) {
                         continue;
                     }
-                    if(e==g){
+                    if (e == g) {
                         continue;
-                    }
-                    else{
+                    } else {
                         lbl = Math.min(Math.min(e, g), px);
                         this.CCproperty[k].setLabel(lbl);
                     }
@@ -207,12 +203,12 @@ public class CClabel extends Property {
 
     }
 
-    public void connectPass3(int [][]zfa, Property []CCproperty) {
-        int k=0;
+    public void connectPass3(int[][] zfa, Property[] CCproperty) {
+        int k = 0;
         int numpx;
         int px;
         // algo in specs
-        for(int i=1; i<this.trueNumCC; i++){
+        for (int i = 1; i < this.trueNumCC; i++) {
             this.CCproperty[i].setLabel(i);
             this.CCproperty[i].setNumPixels(0);
             this.CCproperty[i].setMinR(this.numRows);
@@ -220,24 +216,24 @@ public class CClabel extends Property {
             this.CCproperty[i].setMinC(this.numCols);
             this.CCproperty[i].setMaxC(0);
         }
-        for(int r=1; r<this.numRows; r++){
-            for(int c=1; c<this.numCols; c++){
+        for (int r = 1; r < this.numRows; r++) {
+            for (int c = 1; c < this.numCols; c++) {
                 px = zfa[r][c];
-                if(px > 0){
+                if (px > 0) {
                     zfa[r][c] = this.EQAry[px];
                     k = zfa[r][c];
                     numpx = this.CCproperty[k].getNumPixels();
                     CCproperty[k].setNumPixels(++numpx);
-                    if(r < this.CCproperty[k].getMinR()){
+                    if (r < this.CCproperty[k].getMinR()) {
                         this.CCproperty[k].setMinR(r);
                     }
-                    if(r > this.CCproperty[k].getMaxR()){
+                    if (r > this.CCproperty[k].getMaxR()) {
                         this.CCproperty[k].setMaxR(r);
                     }
-                    if(c < this.CCproperty[k].getMinC()){
+                    if (c < this.CCproperty[k].getMinC()) {
                         this.CCproperty[k].setMinC(c);
                     }
-                    if(c > this.CCproperty[k].getMaxC()){
+                    if (c > this.CCproperty[k].getMaxC()) {
                         this.CCproperty[k].setMaxC(c);
                     }
                 }
@@ -245,21 +241,21 @@ public class CClabel extends Property {
         }
     }
 
-    public void drawBoxes(int [][]zfa, Property []CCproperty) {
+    public void drawBoxes(int[][] zfa, Property[] CCproperty) {
         // algo in specs
         int minRow, minCol, maxRow, maxCol, label;
-        for(int index=1; index<=this.trueNumCC; index++){
-            minRow = this.CCproperty[index].getMinR()+1;
-            minCol = this.CCproperty[index].getMinC()+1;
-            maxRow = this.CCproperty[index].getMaxR()+1;
-            maxCol = this.CCproperty[index].getMaxC()+1;
+        for (int index = 1; index <= this.trueNumCC; index++) {
+            minRow = this.CCproperty[index].getMinR() + 1;
+            minCol = this.CCproperty[index].getMinC() + 1;
+            maxRow = this.CCproperty[index].getMaxR() + 1;
+            maxCol = this.CCproperty[index].getMaxC() + 1;
             label = this.CCproperty[index].getLabel();
 
-            for(int i=minCol; i<=maxCol; i++){
+            for (int i = minCol; i <= maxCol; i++) {
                 zfa[minRow][i] = label;
                 zfa[maxRow][i] = label;
             }
-            for(int i=minRow; i<=maxRow; i++){
+            for (int i = minRow; i <= maxRow; i++) {
                 zfa[i][minCol] = label;
                 zfa[i][minCol] = label;
             }
@@ -272,10 +268,12 @@ public class CClabel extends Property {
 
     public int manageEQAry() {
         int counter = 0;
-        for(int i=1; i<=this.EQAry.length; i++){
-            //if()
+        for (int i = 1; i <= this.EQAry.length; i++) {
+            if (this.EQAry[i] != this.EQAry[i - 1]) {
+                counter++;
+            }
         }
-        return 0;
+        return counter;
     }
 
     public void printCCproperty() {
@@ -283,7 +281,7 @@ public class CClabel extends Property {
     }
 
     public void printEQAry() {
-        for(int i = 1; i<=this.newLabel; i++){
+        for (int i = 1; i <= this.newLabel; i++) {
             System.out.println(this.EQAry[i]);
         }
     }
