@@ -85,11 +85,12 @@ public class CClabel extends Property {
         int px, minLabel;
         int helper = 0;
         int a, b, c, d;
-        boolean flag = false;
+        boolean flag = true;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
                 if (px > 0) {
+                    helper = 0;
                     a = zfa[i - 1][j - 1];
                     b = zfa[i - 1][j];
                     c = zfa[i - 1][j + 1];
@@ -104,29 +105,34 @@ public class CClabel extends Property {
                     if (a != 0) {
                         this.nonZeroNeighborAry[helper++] = a;
                         if (px != a) {
-                            flag = true;
+                            flag = false;
                         }
                     }
                     if (b != 0) {
                         this.nonZeroNeighborAry[helper++] = b;
                         if (px != b) {
-                            flag = true;
+                            flag = false;
                         }
                     }
                     if (c != 0) {
                         this.nonZeroNeighborAry[helper++] = c;
                         if (px != c) {
-                            flag = true;
+                            flag = false;
                         }
                     }
                     if (d != 0) {
                         this.nonZeroNeighborAry[helper++] = d;
                         if (px != d) {
-                            flag = true;
+                            flag = false;
                         }
                     }
+                    // case 2
+                    if(flag){
+                        zfa[i][j] = this.nonZeroNeighborAry[0];
+                        this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
+                    }
                     // case 3
-                    if (flag) {
+                    else {
                         minLabel = findMin();
                         zfa[i][j] = minLabel;
                         updateEQ(px, minLabel);
@@ -141,16 +147,45 @@ public class CClabel extends Property {
         // update Equivalence theorem
         int px, lbl;
         int e, f, g, h;
+        int helper = 0;
+        boolean flag = true;
         for (int i = this.numRows; i >= 1; i--) {
             for (int j = this.numCols; j >= 1; j--) {
                 px = zfa[i][j];
                 if (px > 0) {
+                    helper = 0;
+                    this.nonZeroNeighborAry[helper++] = px;
                     e = zfa[i][j + 1];
                     f = zfa[i + 1][j - 1];
                     g = zfa[i + 1][j];
                     h = zfa[i + 1][j + 1];
-                    if (e != f || e != g || e != h || e != px) {
-                        lbl = Math.min(Math.min((Math.min(Math.min(e, f), g)), h), px);
+                    if(e != 0){
+                        this.nonZeroNeighborAry[helper++] = e;
+                        if(px != e){
+                            flag = false;
+                        }
+                    }
+                    if(f != 0){
+                        this.nonZeroNeighborAry[helper++] = e;
+                        if(px != f){
+                            flag = false;
+                        }
+                    }
+                    if(g != 0){
+                        this.nonZeroNeighborAry[helper++] = e;
+                        if(px != g){
+                            flag = false;
+                        }
+                    }
+                    if(h != 0){
+                        this.nonZeroNeighborAry[helper++] = e;
+                        if(px != h){
+                            flag = false;
+                        }
+                    }
+                    //case 3
+                    if (!flag) {
+                        lbl = findMin();
                         zfa[i][j] = lbl;
                         updateEQ(px, lbl);
                     }
@@ -164,32 +199,41 @@ public class CClabel extends Property {
         int px, lbl;
         int a, b;
         int helper = 0;
-        boolean flag = false;
+        boolean flag = true;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
                 if (px > 0) {
+                    helper = 0;
                     a = zfa[i + 1][j];
                     b = zfa[i][j - 1];
-                    if (a != 0) {
-                        this.nonZeroNeighborAry[helper++] = a;
-                        if (px != a) {
-                            flag = true;
-                        }
-                    }
-                    if (b != 0) {
-                        this.nonZeroNeighborAry[helper++] = b;
-                        if (px != b) {
-                            flag = true;
-                        }
-                    }
+                    //case 1
                     if (a == 0 && b == 0) {
                         this.newLabel++;
                         updateEQ(px, this.newLabel);
                         px = this.newLabel;
                         zfa[i][j] = px;
+                        continue;
                     }
-                    if (flag) {
+                    if (a != 0) {
+                        this.nonZeroNeighborAry[helper++] = a;
+                        if (px != a) {
+                            flag = false;
+                        }
+                    }
+                    if (b != 0) {
+                        this.nonZeroNeighborAry[helper++] = b;
+                        if (px != b) {
+                            flag = false;
+                        }
+                    }
+                    //case 2
+                    if (flag){
+                        zfa[i][j] = this.nonZeroNeighborAry[0];
+                        this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
+                    }
+                    //case 3
+                    else {
                         lbl = findMin();
                         zfa[i][j] = lbl;
                         updateEQ(px, lbl);
@@ -203,16 +247,32 @@ public class CClabel extends Property {
     public int[][] connect4Pass2(int[][] zfa) {
         // update Equivalence theorem
         int px, lbl;
-        int e, g, k;
+        int e, g;
+        int helper = 0;
+        boolean flag = true;
         for (int i = this.numRows; i >= 1; i--) {
             for (int j = this.numCols; j >= 1; j--) {
                 px = zfa[i][j];
                 if (px > 0) {
-                    k = zfa[i][j];
+                    helper = 0;
+                    this.nonZeroNeighborAry[helper++] = px;
                     e = zfa[i][j + 1];
                     g = zfa[i + 1][j];
-                    if (e != g || e != px) {
-                        lbl = Math.min(Math.min(e, g), px);
+                    if(e != 0){
+                        this.nonZeroNeighborAry[helper++] = e;
+                        if(px != e){
+                            flag = false;
+                        }
+                    }
+                    if(g != 0){
+                        this.nonZeroNeighborAry[helper++] = g;
+                        if(px != g){
+                            flag = false;
+                        }
+                    }
+                    //case 3
+                    if (!flag) {
+                        lbl = findMin();
                         zfa[i][j] = lbl;
                         updateEQ(px, lbl);
                     }
@@ -292,6 +352,9 @@ public class CClabel extends Property {
             if (this.EQAry[i] != this.EQAry[i - 1]) {
                 counter++;
             }
+        }
+        for(int i = 1; i<=counter; i++){
+            this.EQAry[i] = i;
         }
         return counter;
     }
