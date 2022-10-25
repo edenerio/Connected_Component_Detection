@@ -1,5 +1,4 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 
 public class CClabel extends Property {
@@ -83,9 +82,10 @@ public class CClabel extends Property {
     }
 
     public int[][] connect8Pass1(int[][] zfa) {
-        int px;
+        int px, minLabel;
+        int helper = 0;
         int a, b, c, d;
-        int pxcase = 0;
+        boolean flag = false;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
@@ -94,20 +94,43 @@ public class CClabel extends Property {
                     b = zfa[i - 1][j];
                     c = zfa[i - 1][j + 1];
                     d = zfa[i][j - 1];
+                    // case 1
                     if (a == 0 && b == 0 && c == 0 && d == 0) {
                         this.newLabel++;
-                        px = this.newLabel;
-                        pxcase = 1;
+                        updateEQ(px, this.newLabel);
+                        zfa[i][j] = this.newLabel;
+                        continue;
                     }
-                    if (a == b && a == c && a == d) {
-                        pxcase = 2;
-                    } else {
-                        px = Math.min((Math.min(Math.min(a, b), c)), d);
-                        pxcase = 3;
+                    if (a != 0) {
+                        this.nonZeroNeighborAry[helper++] = a;
+                        if (px != a) {
+                            flag = true;
+                        }
                     }
-                }
-                if (pxcase == 1 || pxcase == 3) {
-                    updateEQ(this.newLabel, px);
+                    if (b != 0) {
+                        this.nonZeroNeighborAry[helper++] = b;
+                        if (px != b) {
+                            flag = true;
+                        }
+                    }
+                    if (c != 0) {
+                        this.nonZeroNeighborAry[helper++] = c;
+                        if (px != c) {
+                            flag = true;
+                        }
+                    }
+                    if (d != 0) {
+                        this.nonZeroNeighborAry[helper++] = d;
+                        if (px != d) {
+                            flag = true;
+                        }
+                    }
+                    // case 3
+                    if (flag) {
+                        minLabel = findMin();
+                        zfa[i][j] = minLabel;
+                        updateEQ(px, minLabel);
+                    }
                 }
             }
         }
@@ -138,29 +161,39 @@ public class CClabel extends Property {
     }
 
     public int[][] connect4Pass1(int[][] zfa) {
-        int px;
+        int px, lbl;
         int a, b;
-        int pxcase = 0;
+        int helper = 0;
+        boolean flag = false;
         for (int i = 1; i <= this.numRows; i++) {
             for (int j = 1; j <= this.numCols; j++) {
                 px = zfa[i][j];
                 if (px > 0) {
                     a = zfa[i + 1][j];
                     b = zfa[i][j - 1];
+                    if (a != 0) {
+                        this.nonZeroNeighborAry[helper++] = a;
+                        if (px != a) {
+                            flag = true;
+                        }
+                    }
+                    if (b != 0) {
+                        this.nonZeroNeighborAry[helper++] = b;
+                        if (px != b) {
+                            flag = true;
+                        }
+                    }
                     if (a == 0 && b == 0) {
                         this.newLabel++;
+                        updateEQ(px, this.newLabel);
                         px = this.newLabel;
-                        pxcase = 1;
+                        zfa[i][j] = px;
                     }
-                    if (a == b) {
-                        pxcase = 2;
-                    } else {
-                        px = Math.min(a, b);
-                        pxcase = 3;
+                    if (flag) {
+                        lbl = findMin();
+                        zfa[i][j] = lbl;
+                        updateEQ(px, lbl);
                     }
-                }
-                if (pxcase == 1 || pxcase == 3) {
-                    updateEQ(this.newLabel, px);
                 }
             }
         }
@@ -299,6 +332,17 @@ public class CClabel extends Property {
             }
             out.write("\n");
         }
+    }
+
+    int findMin() {
+        int retVal = this.nonZeroNeighborAry[0];
+        for (int i = 1; i < this.nonZeroNeighborAry.length; i++) {
+            if (retVal > this.nonZeroNeighborAry[i] && this.nonZeroNeighborAry[i] != -1) {
+                retVal = this.nonZeroNeighborAry[i];
+            }
+        }
+        this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
+        return retVal;
     }
 
     // setter/getter here
