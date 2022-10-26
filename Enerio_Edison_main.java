@@ -32,15 +32,16 @@ public class Enerio_Edison_main {
         //step 4
         if(whichConnectness==4){
             myCC.connect4Pass1(myCC.zeroFramedAry);
+            RFprettyPrintFile.write("Result of Pass 1: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
-            RFprettyPrintFile.write("EQ Ary after Pass 1:");
-            System.out.println("after pass 1: ");
+            myCC.makeBorder(RFprettyPrintFile);
+            RFprettyPrintFile.write("EQ Ary after Pass 1: \n");
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
             myCC.connect4Pass2(myCC.zeroFramedAry);
+            RFprettyPrintFile.write("Result of Pass 2: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
-            RFprettyPrintFile.write("EQ Ary after Pass 2:");
-            System.out.println("after pass 2:");
+            RFprettyPrintFile.write("EQ Ary after Pass 2: \n");
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
         }
@@ -48,25 +49,29 @@ public class Enerio_Edison_main {
         //step 5
         if(whichConnectness==8){
             myCC.connect8Pass1(myCC.zeroFramedAry);
+            RFprettyPrintFile.write("Result of Pass 1: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
-            RFprettyPrintFile.write("EQ Ary after Pass 1:");
-            System.out.println("after pass 1: ");
+            myCC.makeBorder(RFprettyPrintFile);
+            RFprettyPrintFile.write("EQ Ary after Pass 1: \n");
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
             myCC.connect8Pass2(myCC.zeroFramedAry);
+            RFprettyPrintFile.write("Result of Pass 2: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
-            RFprettyPrintFile.write("EQ Ary after Pass 2:");
-            System.out.println("after pass 2:");
+            myCC.makeBorder(RFprettyPrintFile);
+            RFprettyPrintFile.write("EQ Ary after Pass 2:\n");
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
         }
 
         //step 6
-        myCC.setTrueNum(myCC.manageEQAry());
+        int truenum = myCC.manageEQAry();
+        myCC.setTrueNum(truenum);
         System.out.println(myCC.getTrueNum());
-        RFprettyPrintFile.write("EQ Ary up to new label");
-        System.out.println("from step 6");
+        RFprettyPrintFile.write("EQ Ary after management: \n");
         myCC.printEQAry(RFprettyPrintFile);
+        myCC.makeBorder(RFprettyPrintFile);
+        System.out.println();
         myCC.setNewMin(0);
         myCC.setNewMax(myCC.getTrueNum());
         myCC.allocateCCproperty(myCC.getTrueNum());
@@ -75,10 +80,14 @@ public class Enerio_Edison_main {
         myCC.connectPass3(myCC.zeroFramedAry, myCC.CCproperty);
 
         //step 8
+        RFprettyPrintFile.write("Result of Pass 3 \n");
         myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
+        myCC.makeBorder(RFprettyPrintFile);
 
         //step 9
+        RFprettyPrintFile.write("EQ Ary after Pass 3 \n");
         myCC.printEQAry(RFprettyPrintFile);
+        myCC.makeBorder(RFprettyPrintFile);
 
         //step 10
         labelFile.write(myCC.getNumRows());
@@ -101,15 +110,17 @@ public class Enerio_Edison_main {
 
         //step 14
         myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
+        myCC.makeBorder(RFprettyPrintFile);
 
         //step 15
-        RFprettyPrintFile.write("True number of Conected Components: ");
-        RFprettyPrintFile.write(myCC.getTrueNum());
+        RFprettyPrintFile.write("True number of Connected Components: ");
+        RFprettyPrintFile.write(myCC.trueNumCC);
 
         //step 16
         inFile.close();
         labelFile.close();
         RFprettyPrintFile.close();
         propertyFile.close();
+        System.out.println("asdf");
     }
 }

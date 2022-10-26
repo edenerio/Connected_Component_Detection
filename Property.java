@@ -1,5 +1,10 @@
 public class Property {
-    private int label, numPixels, minR, minC, maxR, maxC;
+    private int label=0;
+    private int numPixels=0;
+    private int minR = 0;
+    private int minC = 0;
+    private int maxR = 0;
+    private int maxC = 0;
 
     public void setLabel(int i){
         this.label = i;

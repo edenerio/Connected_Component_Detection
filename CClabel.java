@@ -2,7 +2,8 @@ import java.util.*;
 import java.io.*;
 
 public class CClabel extends Property {
-    private int numRows, numCols, minVal, maxVal, newLabel, trueNumCC, newMin, newMax;
+    private int numRows, numCols, minVal, maxVal, newLabel, newMin, newMax;
+    public int trueNumCC;
     public int zeroFramedAry[][];
     private int nonZeroNeighborAry[];
     private int EQAry[];
@@ -14,6 +15,7 @@ public class CClabel extends Property {
         this.minVal = minVal;
         this.maxVal = maxVal;
         this.newLabel = 0;
+        this.trueNumCC = 0;
         this.zeroFramedAry = new int[numRows + 2][numCols + 2];
         this.nonZeroNeighborAry = new int[5];
         this.EQAry = new int[(numRows * numCols) / 4];
@@ -63,22 +65,22 @@ public class CClabel extends Property {
         prettyprint.write(" ");
         prettyprint.write(Integer.toString(this.maxVal));
         prettyprint.write(" ");
-        String str = Integer.toString(this.maxVal);
+        String str = Integer.toString(this.newLabel);
         prettyprint.write("\n");
         int width = str.length();
 
         for (int r = 1; r <= this.numRows; r++) {
             for (int c = 1; c <= this.numCols; c++) {
                 prettyprint.write(Integer.toString(zfa[r][c]));
-                //
+                //1
                 System.out.print(zfa[r][c]);
-                //
+                //2
                 String str2 = Integer.toString(zfa[r][c]);
                 int WW = str2.length();
                 prettyprint.write(" ");
-                //
+                //1
                 System.out.print(" ");
-                //
+                //2
                 while (WW < width) {
                     prettyprint.write(" ");
                     System.out.print(" ");
@@ -122,7 +124,7 @@ public class CClabel extends Property {
                         if (d != 0) {
                             this.nonZeroNeighborAry[helper++] = d;
                         }
-                        for(int e=1; e<=helper; e++){
+                        for(int e=1; e<helper; e++){
                             if(this.nonZeroNeighborAry[e]!=this.nonZeroNeighborAry[e-1]){
                                 flag = false;
                             }
@@ -201,6 +203,18 @@ public class CClabel extends Property {
                     if (!flag) {
                         lbl = findMin();
                         zfa[i][j] = lbl;
+                        if(zfa[i][j + 1]!=0){
+                            zfa[i][j + 1] = lbl;
+                        }
+                        if(zfa[i + 1][j - 1]!=0){
+                            zfa[i + 1][j - 1] = lbl;
+                        }
+                        if(zfa[i + 1][j] != 0){
+                            zfa[i + 1][j] = lbl;
+                        }
+                        if(zfa[i + 1][j + 1] != 0){
+                            zfa[i + 1][j + 1] = lbl;
+                        }
                         updateEQ(px, lbl);
                         flag=true;
                     }
@@ -291,6 +305,12 @@ public class CClabel extends Property {
                     if (!flag) {
                         lbl = findMin();
                         zfa[i][j] = lbl;
+                        if(zfa[i + 1][j] != 0){
+                            zfa[i + 1][j] = lbl;
+                        }
+                        if(zfa[i][j + 1] != 0){
+                            zfa[i][j + 1] = lbl;
+                        }
                         updateEQ(px, lbl);
                         flag=true;
                     }
@@ -341,7 +361,9 @@ public class CClabel extends Property {
 
     public void allocateCCproperty(int truenumcc){
         this.CCproperty = new Property[truenumcc+1];
-        System.out.println("CC property Allocated!");
+        for(int i=0; i<=truenumcc; i++){
+            this.CCproperty[i] = new Property();
+        }
     }
 
     public void drawBoxes(int[][] zfa, Property[] CCproperty) {
@@ -371,14 +393,18 @@ public class CClabel extends Property {
 
     public int manageEQAry() {
         int counter = 0;
-        for (int i = 2; i < this.EQAry.length; i++) {
-            if (this.EQAry[i] != this.EQAry[i - 1]) {
-                counter++;
+        for (int i = 1; i < this.EQAry.length; i++) {
+            if (i==this.EQAry[i]) {
+                this.EQAry[i] = ++counter;
+            }
+            else {
+                this.EQAry[i] = this.EQAry[this.EQAry[i]];
             }
         }
         for(int i = 1; i<=counter; i++){
-            this.EQAry[i] = i;
+            System.out.print(this.EQAry[i] + " ");
         }
+        this.trueNumCC = counter;
         return counter;
     }
 
@@ -413,10 +439,8 @@ public class CClabel extends Property {
         for (int i = 1; i <= this.newLabel; i++) {
             out.write(Integer.toString(this.EQAry[i]));
             out.write(" ");
-            System.out.print(this.EQAry[i]);
-            System.out.print(" ");
         }
-        System.out.println();
+        out.write("\n");
     }
 
     public void printImg(BufferedWriter out) throws IOException {
@@ -460,8 +484,9 @@ public class CClabel extends Property {
 
     public void makeBorder(BufferedWriter out) throws IOException{
         for(int i=0; i<=this.numRows+1; i++){
-            out.write("--");
+            out.write("---");
         }
+        out.write("\n");
     }
 
     // setter/getter here
