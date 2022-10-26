@@ -1,10 +1,5 @@
 public class Property {
     private int label, numPixels, minR, minC, maxR, maxC;
-    public Property CCproperty[];
-
-    public void allocateCCproperty(int truenumcc){
-        this.CCproperty = new Property[truenumcc+1];
-    }
 
     public void setLabel(int i){
         this.label = i;

@@ -3,9 +3,10 @@ import java.io.*;
 
 public class CClabel extends Property {
     private int numRows, numCols, minVal, maxVal, newLabel, trueNumCC, newMin, newMax;
-    private int zeroFramedAry[][];
+    public int zeroFramedAry[][];
     private int nonZeroNeighborAry[];
     private int EQAry[];
+    Property[] CCproperty;
 
     CClabel(int numRows, int numCols, int minVal, int maxVal) {
         this.numRows = numRows;
@@ -43,14 +44,14 @@ public class CClabel extends Property {
          * Read from input file and write to zeroFramedAry
          * begin at (1,1)
          */
-        for (int i = 1; i < numRows; i++) {
-            for (int j = 1; j < numCols; j++) {
+        for (int i = 1; i <= numRows; i++) {
+            for (int j = 1; j <= numCols; j++) {
                 this.zeroFramedAry[i][j] = b.nextInt();
             }
         }
     }
 
-    public void imgReformat(int[][] zfa, int minVal, int maxVal, BufferedWriter prettyprint) throws IOException {
+    public void imgReformat(int[][] zfa, BufferedWriter prettyprint) throws IOException {
         /*
          * Print zeroFramedAry to prettyprint. Reuse code from previous project
          */
@@ -58,32 +59,40 @@ public class CClabel extends Property {
         prettyprint.write(" ");
         prettyprint.write(Integer.toString(this.numCols));
         prettyprint.write(" ");
-        prettyprint.write(Integer.toString(this.newMin));
+        prettyprint.write(Integer.toString(this.minVal));
         prettyprint.write(" ");
-        prettyprint.write(Integer.toString(this.newMax));
+        prettyprint.write(Integer.toString(this.maxVal));
         prettyprint.write(" ");
-        String str = Integer.toString(newMax);
+        String str = Integer.toString(this.maxVal);
         prettyprint.write("\n");
         int width = str.length();
 
         for (int r = 1; r <= this.numRows; r++) {
             for (int c = 1; c <= this.numCols; c++) {
                 prettyprint.write(Integer.toString(zfa[r][c]));
+                //
+                System.out.print(zfa[r][c]);
+                //
                 String str2 = Integer.toString(zfa[r][c]);
                 int WW = str2.length();
                 prettyprint.write(" ");
+                //
+                System.out.print(" ");
+                //
                 while (WW < width) {
                     prettyprint.write(" ");
+                    System.out.print(" ");
                     WW++;
                 }
             }
             prettyprint.write("\n");
+            System.out.println();
         }
     }
 
     public int[][] connect8Pass1(int[][] zfa) {
         int px, minLabel;
-        int helper = 0;
+        int helper;
         int a, b, c, d;
         boolean flag = true;
         for (int i = 1; i <= this.numRows; i++) {
@@ -98,44 +107,49 @@ public class CClabel extends Property {
                     // case 1
                     if (a == 0 && b == 0 && c == 0 && d == 0) {
                         this.newLabel++;
-                        updateEQ(px, this.newLabel);
+                        updateEQ(this.newLabel, this.newLabel);
                         zfa[i][j] = this.newLabel;
-                        continue;
-                    }
-                    if (a != 0) {
-                        this.nonZeroNeighborAry[helper++] = a;
-                        if (px != a) {
-                            flag = false;
+                    } else {
+                        if (a != 0) {
+                            this.nonZeroNeighborAry[helper++] = a;
                         }
-                    }
-                    if (b != 0) {
-                        this.nonZeroNeighborAry[helper++] = b;
-                        if (px != b) {
-                            flag = false;
+                        if (b != 0) {
+                            this.nonZeroNeighborAry[helper++] = b;
                         }
-                    }
-                    if (c != 0) {
-                        this.nonZeroNeighborAry[helper++] = c;
-                        if (px != c) {
-                            flag = false;
+                        if (c != 0) {
+                            this.nonZeroNeighborAry[helper++] = c;
                         }
-                    }
-                    if (d != 0) {
-                        this.nonZeroNeighborAry[helper++] = d;
-                        if (px != d) {
-                            flag = false;
+                        if (d != 0) {
+                            this.nonZeroNeighborAry[helper++] = d;
                         }
-                    }
-                    // case 2
-                    if(flag){
-                        zfa[i][j] = this.nonZeroNeighborAry[0];
-                        this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
-                    }
-                    // case 3
-                    else {
-                        minLabel = findMin();
-                        zfa[i][j] = minLabel;
-                        updateEQ(px, minLabel);
+                        for(int e=1; e<=helper; e++){
+                            if(this.nonZeroNeighborAry[e]!=this.nonZeroNeighborAry[e-1]){
+                                flag = false;
+                            }
+                        }
+                        // case 2
+                        if(flag){
+                            zfa[i][j] = this.nonZeroNeighborAry[0];
+                            this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
+                        }
+                        // case 3
+                        else {
+                            minLabel = findMin();
+                            if(zfa[i - 1][j - 1] != 0){
+                                updateEQ(zfa[i - 1][j - 1], minLabel);
+                            }
+                            if(zfa[i - 1][j] != 0){
+                                updateEQ(zfa[i - 1][j], minLabel);
+                            }
+                            if(zfa[i - 1][j + 1] != 0){
+                                updateEQ(zfa[i - 1][j + 1], minLabel);
+                            }
+                            if(zfa[i][j - 1] != 0){
+                                updateEQ(zfa[i][j - 1], minLabel);
+                            }
+                            zfa[i][j] = minLabel;
+                            updateEQ(px, minLabel);
+                        }
                     }
                 }
             }
@@ -166,19 +180,19 @@ public class CClabel extends Property {
                         }
                     }
                     if(f != 0){
-                        this.nonZeroNeighborAry[helper++] = e;
+                        this.nonZeroNeighborAry[helper++] = f;
                         if(px != f){
                             flag = false;
                         }
                     }
                     if(g != 0){
-                        this.nonZeroNeighborAry[helper++] = e;
+                        this.nonZeroNeighborAry[helper++] = g;
                         if(px != g){
                             flag = false;
                         }
                     }
                     if(h != 0){
-                        this.nonZeroNeighborAry[helper++] = e;
+                        this.nonZeroNeighborAry[helper++] = h;
                         if(px != h){
                             flag = false;
                         }
@@ -188,6 +202,7 @@ public class CClabel extends Property {
                         lbl = findMin();
                         zfa[i][j] = lbl;
                         updateEQ(px, lbl);
+                        flag=true;
                     }
                 }
             }
@@ -205,38 +220,40 @@ public class CClabel extends Property {
                 px = zfa[i][j];
                 if (px > 0) {
                     helper = 0;
-                    a = zfa[i + 1][j];
+                    a = zfa[i - 1][j];
                     b = zfa[i][j - 1];
                     //case 1
                     if (a == 0 && b == 0) {
                         this.newLabel++;
-                        updateEQ(px, this.newLabel);
-                        px = this.newLabel;
-                        zfa[i][j] = px;
-                        continue;
-                    }
-                    if (a != 0) {
-                        this.nonZeroNeighborAry[helper++] = a;
-                        if (px != a) {
-                            flag = false;
+                        updateEQ(this.newLabel, this.newLabel);
+                        zfa[i][j] = this.newLabel;
+                    } else {
+                        if (a != 0) {
+                            this.nonZeroNeighborAry[helper++] = a;
                         }
-                    }
-                    if (b != 0) {
-                        this.nonZeroNeighborAry[helper++] = b;
-                        if (px != b) {
-                            flag = false;
+                        if (b != 0) {
+                            this.nonZeroNeighborAry[helper++] = b;
+                            if (a != b && a != 0) {
+                                flag = false;
+                            }
                         }
-                    }
-                    //case 2
-                    if (flag){
-                        zfa[i][j] = this.nonZeroNeighborAry[0];
-                        this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
-                    }
-                    //case 3
-                    else {
-                        lbl = findMin();
-                        zfa[i][j] = lbl;
-                        updateEQ(px, lbl);
+                        //case 2
+                        if (flag){
+                            zfa[i][j] = this.nonZeroNeighborAry[0];
+                            this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
+                        }
+                        //case 3
+                        if(!flag) {
+                            lbl = findMin();
+                            if(zfa[i - 1][j]!=0){
+                                updateEQ(zfa[i - 1][j], lbl);
+                            }
+                            if(zfa[i][j - 1]!=0){
+                                updateEQ(zfa[i][j - 1], lbl);
+                            }
+                            zfa[i][j] = lbl;
+                            flag = true;
+                        }
                     }
                 }
             }
@@ -275,6 +292,7 @@ public class CClabel extends Property {
                         lbl = findMin();
                         zfa[i][j] = lbl;
                         updateEQ(px, lbl);
+                        flag=true;
                     }
                 }
             }
@@ -288,7 +306,7 @@ public class CClabel extends Property {
         int numpx;
         int px;
         // algo in specs
-        for (int i = 1; i < this.trueNumCC; i++) {
+        for (int i = 1; i <= this.trueNumCC; i++) {
             this.CCproperty[i].setLabel(i);
             this.CCproperty[i].setNumPixels(0);
             this.CCproperty[i].setMinR(this.numRows);
@@ -321,6 +339,11 @@ public class CClabel extends Property {
         }
     }
 
+    public void allocateCCproperty(int truenumcc){
+        this.CCproperty = new Property[truenumcc+1];
+        System.out.println("CC property Allocated!");
+    }
+
     public void drawBoxes(int[][] zfa, Property[] CCproperty) {
         // algo in specs
         int minRow, minCol, maxRow, maxCol, label;
@@ -348,7 +371,7 @@ public class CClabel extends Property {
 
     public int manageEQAry() {
         int counter = 0;
-        for (int i = 1; i <= this.EQAry.length; i++) {
+        for (int i = 2; i < this.EQAry.length; i++) {
             if (this.EQAry[i] != this.EQAry[i - 1]) {
                 counter++;
             }
@@ -359,14 +382,41 @@ public class CClabel extends Property {
         return counter;
     }
 
-    public void printCCproperty() {
-
+    public void printCCproperty(BufferedWriter out) throws IOException {
+        out.write(this.numRows);
+        out.write(" ");
+        out.write(this.numCols);
+        out.write(" ");
+        out.write(this.minVal);
+        out.write(" ");
+        out.write(this.maxVal);
+        out.write("\n");
+        out.write(this.trueNumCC);
+        out.write("\n");
+        for(int i=1; i<=this.trueNumCC; i++){
+            out.write(this.CCproperty[i].getLabel());
+            out.write("\n");
+            out.write(this.CCproperty[i].getNumPixels());
+            out.write("\n");
+            out.write(this.CCproperty[i].getMinR());
+            out.write(" ");
+            out.write(this.CCproperty[i].getMinC());
+            out.write("\n");
+            out.write(this.CCproperty[i].getMaxR());
+            out.write(" ");
+            out.write(this.CCproperty[i].getMaxC());
+            out.write("\n");
+        }
     }
 
-    public void printEQAry() {
+    public void printEQAry(BufferedWriter out) throws IOException {
         for (int i = 1; i <= this.newLabel; i++) {
-            System.out.println(this.EQAry[i]);
+            out.write(Integer.toString(this.EQAry[i]));
+            out.write(" ");
+            System.out.print(this.EQAry[i]);
+            System.out.print(" ");
         }
+        System.out.println();
     }
 
     public void printImg(BufferedWriter out) throws IOException {
@@ -397,7 +447,7 @@ public class CClabel extends Property {
         }
     }
 
-    int findMin() {
+    private int findMin() {
         int retVal = this.nonZeroNeighborAry[0];
         for (int i = 1; i < this.nonZeroNeighborAry.length; i++) {
             if (retVal > this.nonZeroNeighborAry[i] && this.nonZeroNeighborAry[i] != -1) {
@@ -408,5 +458,42 @@ public class CClabel extends Property {
         return retVal;
     }
 
+    public void makeBorder(BufferedWriter out) throws IOException{
+        for(int i=0; i<=this.numRows+1; i++){
+            out.write("--");
+        }
+    }
+
     // setter/getter here
+    public void setTrueNum(int i){
+        this.trueNumCC = i;
+    }
+
+    public void setNewMin(int i){
+        this.newMin = i;
+    }
+
+    public void setNewMax(int i){
+        this.newMax = i;
+    }
+
+    public int getTrueNum(){
+        return this.trueNumCC;
+    }
+
+    public int getNumRows(){
+        return this.numRows;
+    }
+
+    public int getNumCols(){
+        return this.numCols;
+    }
+
+    public int getNewMin(){
+        return this.newMin;
+    }
+
+    public int getNewMax(){
+        return this.newMax;
+    }
 }
