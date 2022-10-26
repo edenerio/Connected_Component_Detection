@@ -3,8 +3,9 @@ import java.io.*;
 
 public class Enerio_Edison_main {
     public static void main(String[] args) throws IOException {
-        if(args.length != 5){
+        if (args.length != 5) {
             System.out.println("Invalid Arguments, closing the program...");
+            System.out.println(args.length);
             return;
         }
 
@@ -20,17 +21,17 @@ public class Enerio_Edison_main {
 
         CClabel myCC = new CClabel(numRows, numCols, minVal, maxVal);
 
-        //step 1
+        // step 1
         myCC.zero2D(myCC.zeroFramedAry);
 
-        //step 2
+        // step 2
         myCC.loadImage(inFile);
 
-        //step 3
+        // step 3
         int whichConnectness = Integer.parseInt(args[1]);
 
-        //step 4
-        if(whichConnectness==4){
+        // step 4
+        if (whichConnectness == 4) {
             myCC.connect4Pass1(myCC.zeroFramedAry);
             RFprettyPrintFile.write("Result of Pass 1: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
@@ -41,13 +42,14 @@ public class Enerio_Edison_main {
             myCC.connect4Pass2(myCC.zeroFramedAry);
             RFprettyPrintFile.write("Result of Pass 2: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
+            myCC.makeBorder(RFprettyPrintFile);
             RFprettyPrintFile.write("EQ Ary after Pass 2: \n");
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
         }
 
-        //step 5
-        if(whichConnectness==8){
+        // step 5
+        if (whichConnectness == 8) {
             myCC.connect8Pass1(myCC.zeroFramedAry);
             RFprettyPrintFile.write("Result of Pass 1: \n");
             myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
@@ -64,63 +66,59 @@ public class Enerio_Edison_main {
             myCC.makeBorder(RFprettyPrintFile);
         }
 
-        //step 6
-        int truenum = myCC.manageEQAry();
-        myCC.setTrueNum(truenum);
-        System.out.println(myCC.getTrueNum());
+        // step 6
+        myCC.setTrueNum(myCC.manageEQAry());
         RFprettyPrintFile.write("EQ Ary after management: \n");
         myCC.printEQAry(RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
-        System.out.println();
         myCC.setNewMin(0);
         myCC.setNewMax(myCC.getTrueNum());
         myCC.allocateCCproperty(myCC.getTrueNum());
 
-        //step 7
+        // step 7
         myCC.connectPass3(myCC.zeroFramedAry, myCC.CCproperty);
 
-        //step 8
+        // step 8
         RFprettyPrintFile.write("Result of Pass 3 \n");
         myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
 
-        //step 9
+        // step 9
         RFprettyPrintFile.write("EQ Ary after Pass 3 \n");
         myCC.printEQAry(RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
 
-        //step 10
-        labelFile.write(myCC.getNumRows());
+        // step 10
+        labelFile.write(Integer.toString(myCC.getNumRows()));
         labelFile.write(" ");
-        labelFile.write(myCC.getNumCols());
+        labelFile.write(Integer.toString(myCC.getNumCols()));
         labelFile.write(" ");
-        labelFile.write(myCC.getNewMin());
+        labelFile.write(Integer.toString(myCC.getNewMin()));
         labelFile.write(" ");
-        labelFile.write(myCC.getNewMax());
+        labelFile.write(Integer.toString(myCC.getNewMax()));
         labelFile.write("\n");
 
-        //step 11
+        // step 11
         myCC.printImg(labelFile);
 
-        //step 12
+        // step 12
         myCC.printCCproperty(propertyFile);
 
-        //step 13
+        // step 13
         myCC.drawBoxes(myCC.zeroFramedAry, myCC.CCproperty);
 
-        //step 14
+        // step 14
         myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
 
-        //step 15
+        // step 15
         RFprettyPrintFile.write("True number of Connected Components: ");
-        RFprettyPrintFile.write(myCC.trueNumCC);
+        RFprettyPrintFile.write(Integer.toString(myCC.getTrueNum()));
 
-        //step 16
+        // step 16
         inFile.close();
         labelFile.close();
         RFprettyPrintFile.close();
         propertyFile.close();
-        System.out.println("asdf");
     }
 }

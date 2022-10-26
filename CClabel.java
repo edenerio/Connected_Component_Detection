@@ -2,8 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class CClabel extends Property {
-    private int numRows, numCols, minVal, maxVal, newLabel, newMin, newMax;
-    public int trueNumCC;
+    private int numRows, numCols, minVal, maxVal, newLabel, newMin, newMax, trueNumCC;
     public int zeroFramedAry[][];
     private int nonZeroNeighborAry[];
     private int EQAry[];
@@ -15,7 +14,6 @@ public class CClabel extends Property {
         this.minVal = minVal;
         this.maxVal = maxVal;
         this.newLabel = 0;
-        this.trueNumCC = 0;
         this.zeroFramedAry = new int[numRows + 2][numCols + 2];
         this.nonZeroNeighborAry = new int[5];
         this.EQAry = new int[(numRows * numCols) / 4];
@@ -72,23 +70,15 @@ public class CClabel extends Property {
         for (int r = 1; r <= this.numRows; r++) {
             for (int c = 1; c <= this.numCols; c++) {
                 prettyprint.write(Integer.toString(zfa[r][c]));
-                //1
-                System.out.print(zfa[r][c]);
-                //2
                 String str2 = Integer.toString(zfa[r][c]);
                 int WW = str2.length();
                 prettyprint.write(" ");
-                //1
-                System.out.print(" ");
-                //2
                 while (WW < width) {
                     prettyprint.write(" ");
-                    System.out.print(" ");
                     WW++;
                 }
             }
             prettyprint.write("\n");
-            System.out.println();
         }
     }
 
@@ -124,29 +114,29 @@ public class CClabel extends Property {
                         if (d != 0) {
                             this.nonZeroNeighborAry[helper++] = d;
                         }
-                        for(int e=1; e<helper; e++){
-                            if(this.nonZeroNeighborAry[e]!=this.nonZeroNeighborAry[e-1]){
+                        for (int e = 1; e < helper; e++) {
+                            if (this.nonZeroNeighborAry[e] != this.nonZeroNeighborAry[e - 1]) {
                                 flag = false;
                             }
                         }
                         // case 2
-                        if(flag){
+                        if (flag) {
                             zfa[i][j] = this.nonZeroNeighborAry[0];
                             this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
                         }
                         // case 3
                         else {
                             minLabel = findMin();
-                            if(zfa[i - 1][j - 1] != 0){
+                            if (zfa[i - 1][j - 1] != 0) {
                                 updateEQ(zfa[i - 1][j - 1], minLabel);
                             }
-                            if(zfa[i - 1][j] != 0){
+                            if (zfa[i - 1][j] != 0) {
                                 updateEQ(zfa[i - 1][j], minLabel);
                             }
-                            if(zfa[i - 1][j + 1] != 0){
+                            if (zfa[i - 1][j + 1] != 0) {
                                 updateEQ(zfa[i - 1][j + 1], minLabel);
                             }
-                            if(zfa[i][j - 1] != 0){
+                            if (zfa[i][j - 1] != 0) {
                                 updateEQ(zfa[i][j - 1], minLabel);
                             }
                             zfa[i][j] = minLabel;
@@ -175,48 +165,48 @@ public class CClabel extends Property {
                     f = zfa[i + 1][j - 1];
                     g = zfa[i + 1][j];
                     h = zfa[i + 1][j + 1];
-                    if(e != 0){
+                    if (e != 0) {
                         this.nonZeroNeighborAry[helper++] = e;
-                        if(px != e){
+                        if (px != e) {
                             flag = false;
                         }
                     }
-                    if(f != 0){
+                    if (f != 0) {
                         this.nonZeroNeighborAry[helper++] = f;
-                        if(px != f){
+                        if (px != f) {
                             flag = false;
                         }
                     }
-                    if(g != 0){
+                    if (g != 0) {
                         this.nonZeroNeighborAry[helper++] = g;
-                        if(px != g){
+                        if (px != g) {
                             flag = false;
                         }
                     }
-                    if(h != 0){
+                    if (h != 0) {
                         this.nonZeroNeighborAry[helper++] = h;
-                        if(px != h){
+                        if (px != h) {
                             flag = false;
                         }
                     }
-                    //case 3
+                    // case 3
                     if (!flag) {
                         lbl = findMin();
                         zfa[i][j] = lbl;
-                        if(zfa[i][j + 1]!=0){
+                        if (zfa[i][j + 1] != 0) {
                             zfa[i][j + 1] = lbl;
                         }
-                        if(zfa[i + 1][j - 1]!=0){
+                        if (zfa[i + 1][j - 1] != 0) {
                             zfa[i + 1][j - 1] = lbl;
                         }
-                        if(zfa[i + 1][j] != 0){
+                        if (zfa[i + 1][j] != 0) {
                             zfa[i + 1][j] = lbl;
                         }
-                        if(zfa[i + 1][j + 1] != 0){
+                        if (zfa[i + 1][j + 1] != 0) {
                             zfa[i + 1][j + 1] = lbl;
                         }
                         updateEQ(px, lbl);
-                        flag=true;
+                        flag = true;
                     }
                 }
             }
@@ -236,7 +226,7 @@ public class CClabel extends Property {
                     helper = 0;
                     a = zfa[i - 1][j];
                     b = zfa[i][j - 1];
-                    //case 1
+                    // case 1
                     if (a == 0 && b == 0) {
                         this.newLabel++;
                         updateEQ(this.newLabel, this.newLabel);
@@ -251,18 +241,18 @@ public class CClabel extends Property {
                                 flag = false;
                             }
                         }
-                        //case 2
-                        if (flag){
+                        // case 2
+                        if (flag) {
                             zfa[i][j] = this.nonZeroNeighborAry[0];
                             this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
                         }
-                        //case 3
-                        if(!flag) {
+                        // case 3
+                        if (!flag) {
                             lbl = findMin();
-                            if(zfa[i - 1][j]!=0){
+                            if (zfa[i - 1][j] != 0) {
                                 updateEQ(zfa[i - 1][j], lbl);
                             }
-                            if(zfa[i][j - 1]!=0){
+                            if (zfa[i][j - 1] != 0) {
                                 updateEQ(zfa[i][j - 1], lbl);
                             }
                             zfa[i][j] = lbl;
@@ -289,30 +279,30 @@ public class CClabel extends Property {
                     this.nonZeroNeighborAry[helper++] = px;
                     e = zfa[i][j + 1];
                     g = zfa[i + 1][j];
-                    if(e != 0){
+                    if (e != 0) {
                         this.nonZeroNeighborAry[helper++] = e;
-                        if(px != e){
+                        if (px != e) {
                             flag = false;
                         }
                     }
-                    if(g != 0){
+                    if (g != 0) {
                         this.nonZeroNeighborAry[helper++] = g;
-                        if(px != g){
+                        if (px != g) {
                             flag = false;
                         }
                     }
-                    //case 3
+                    // case 3
                     if (!flag) {
                         lbl = findMin();
                         zfa[i][j] = lbl;
-                        if(zfa[i + 1][j] != 0){
+                        if (zfa[i + 1][j] != 0) {
                             zfa[i + 1][j] = lbl;
                         }
-                        if(zfa[i][j + 1] != 0){
+                        if (zfa[i][j + 1] != 0) {
                             zfa[i][j + 1] = lbl;
                         }
                         updateEQ(px, lbl);
-                        flag=true;
+                        flag = true;
                     }
                 }
             }
@@ -359,9 +349,9 @@ public class CClabel extends Property {
         }
     }
 
-    public void allocateCCproperty(int truenumcc){
-        this.CCproperty = new Property[truenumcc+1];
-        for(int i=0; i<=truenumcc; i++){
+    public void allocateCCproperty(int truenumcc) {
+        this.CCproperty = new Property[truenumcc + 1];
+        for (int i = 0; i <= truenumcc; i++) {
             this.CCproperty[i] = new Property();
         }
     }
@@ -382,7 +372,7 @@ public class CClabel extends Property {
             }
             for (int i = minRow; i <= maxRow; i++) {
                 zfa[i][minCol] = label;
-                zfa[i][minCol] = label;
+                zfa[i][maxCol] = label;
             }
         }
     }
@@ -394,43 +384,39 @@ public class CClabel extends Property {
     public int manageEQAry() {
         int counter = 0;
         for (int i = 1; i < this.EQAry.length; i++) {
-            if (i==this.EQAry[i]) {
+            if (i == this.EQAry[i]) {
                 this.EQAry[i] = ++counter;
-            }
-            else {
+            } else {
                 this.EQAry[i] = this.EQAry[this.EQAry[i]];
             }
-        }
-        for(int i = 1; i<=counter; i++){
-            System.out.print(this.EQAry[i] + " ");
         }
         this.trueNumCC = counter;
         return counter;
     }
 
     public void printCCproperty(BufferedWriter out) throws IOException {
-        out.write(this.numRows);
+        out.write(Integer.toString(this.numRows));
         out.write(" ");
-        out.write(this.numCols);
+        out.write(Integer.toString(this.numCols));
         out.write(" ");
-        out.write(this.minVal);
+        out.write(Integer.toString(this.minVal));
         out.write(" ");
-        out.write(this.maxVal);
+        out.write(Integer.toString(this.maxVal));
         out.write("\n");
-        out.write(this.trueNumCC);
+        out.write(Integer.toString(this.trueNumCC));
         out.write("\n");
-        for(int i=1; i<=this.trueNumCC; i++){
-            out.write(this.CCproperty[i].getLabel());
+        for (int i = 1; i <= this.trueNumCC; i++) {
+            out.write(Integer.toString(this.CCproperty[i].getLabel()));
             out.write("\n");
-            out.write(this.CCproperty[i].getNumPixels());
+            out.write(Integer.toString(this.CCproperty[i].getNumPixels()));
             out.write("\n");
-            out.write(this.CCproperty[i].getMinR());
+            out.write(Integer.toString(this.CCproperty[i].getMinR()));
             out.write(" ");
-            out.write(this.CCproperty[i].getMinC());
+            out.write(Integer.toString(this.CCproperty[i].getMinC()));
             out.write("\n");
-            out.write(this.CCproperty[i].getMaxR());
+            out.write(Integer.toString(this.CCproperty[i].getMaxR()));
             out.write(" ");
-            out.write(this.CCproperty[i].getMaxC());
+            out.write(Integer.toString(this.CCproperty[i].getMaxC()));
             out.write("\n");
         }
     }
@@ -444,15 +430,6 @@ public class CClabel extends Property {
     }
 
     public void printImg(BufferedWriter out) throws IOException {
-        out.write(this.numRows);
-        out.write(" ");
-        out.write(this.numCols);
-        out.write(" ");
-        out.write(this.minVal);
-        out.write(" ");
-        out.write(this.maxVal);
-        out.write("\n");
-
         String str = Integer.toString(this.maxVal);
         int width = str.length();
 
@@ -482,43 +459,43 @@ public class CClabel extends Property {
         return retVal;
     }
 
-    public void makeBorder(BufferedWriter out) throws IOException{
-        for(int i=0; i<=this.numRows+1; i++){
+    public void makeBorder(BufferedWriter out) throws IOException {
+        for (int i = 0; i <= this.numRows + 1; i++) {
             out.write("---");
         }
         out.write("\n");
     }
 
     // setter/getter here
-    public void setTrueNum(int i){
+    public void setTrueNum(int i) {
         this.trueNumCC = i;
     }
 
-    public void setNewMin(int i){
+    public void setNewMin(int i) {
         this.newMin = i;
     }
 
-    public void setNewMax(int i){
+    public void setNewMax(int i) {
         this.newMax = i;
     }
 
-    public int getTrueNum(){
+    public int getTrueNum() {
         return this.trueNumCC;
     }
 
-    public int getNumRows(){
+    public int getNumRows() {
         return this.numRows;
     }
 
-    public int getNumCols(){
+    public int getNumCols() {
         return this.numCols;
     }
 
-    public int getNewMin(){
+    public int getNewMin() {
         return this.newMin;
     }
 
-    public int getNewMax(){
+    public int getNewMax() {
         return this.newMax;
     }
 }
