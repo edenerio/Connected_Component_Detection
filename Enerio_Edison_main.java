@@ -65,9 +65,10 @@ public class Enerio_Edison_main {
             myCC.printEQAry(RFprettyPrintFile);
             myCC.makeBorder(RFprettyPrintFile);
         }
-
+        
         // step 6
         myCC.setTrueNum(myCC.manageEQAry());
+        System.out.println(myCC.getTrueNum());
         RFprettyPrintFile.write("EQ Ary after management: \n");
         myCC.printEQAry(RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
@@ -108,8 +109,16 @@ public class Enerio_Edison_main {
         myCC.drawBoxes(myCC.zeroFramedAry, myCC.CCproperty);
 
         // step 14
+        RFprettyPrintFile.write("After boxes:\n");
         myCC.imgReformat(myCC.zeroFramedAry, RFprettyPrintFile);
         myCC.makeBorder(RFprettyPrintFile);
+
+        for(int i=0; i<myCC.getNumRows()+2; i++){
+            for(int j=0; j<myCC.getNumCols()+2; j++){
+                System.out.print(myCC.zeroFramedAry[i][j] + " ");
+            }
+            System.out.println();
+        }
 
         // step 15
         RFprettyPrintFile.write("True number of Connected Components: ");
