@@ -244,7 +244,7 @@ public class CClabel extends Property {
                             this.nonZeroNeighborAry = minus1D(this.nonZeroNeighborAry);
                         }
                         // case 3
-                        if (!flag) {
+                        else {
                             lbl = findMin();
                             if (zfa[i - 1][j] != 0) {
                                 updateEQ(zfa[i - 1][j], lbl);

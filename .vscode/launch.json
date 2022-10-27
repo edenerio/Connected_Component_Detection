@@ -15,7 +15,7 @@
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}",
-            "args": "CC_Data1.txt 4 prettyPrint.txt labelImg.txt properties.txt"
+            "args": "CC_Data1.txt 8 prettyPrint.txt labelImg.txt properties.txt"
         }
     ]
 }
